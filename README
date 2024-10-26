@@ -11,4 +11,12 @@ user.proto
 
 go run cmd/main.go
 
+--- Build docker image ---
+
+docker build --tag 'grpc-tube' .
+
+--- Run docker image ---
+
+docker run -p 8080:8080 --detach 'grpc-tube'
+
 --- END ---
