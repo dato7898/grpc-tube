@@ -19,4 +19,16 @@ docker build --tag 'grpc-tube' .
 
 docker run -p 8080:8080 --detach 'grpc-tube'
 
+--- Tag image to remote repo ---
+
+docker tag grpc-tube:latest ddato/grpc-tube:latest
+
+--- Push to remote repo ---
+
+docker push ddato/grpc-tube:latest
+
+--- Run docker compose ---
+
+docker compose up -d
+
 --- END ---
