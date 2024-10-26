@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package kz.dato.proto;
+
+option go_package = "github.com/dato7898/grpc-tube/pb";
+
+service User {
+    rpc Register(RegisterRequest) returns (RegisterResponse){}
+}
+
+message RegisterRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message RegisterResponse {
+    int64 id = 1;
+    string username = 2;
+}
