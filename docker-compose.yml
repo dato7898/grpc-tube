@@ -19,3 +19,5 @@ services:
       - DB_SOURCE=postgresql://grpc_tube:grpc_tube@grpc-tube-db:5432/grpc_tube?sslmode=disable
     depends_on:
       - grpc-tube-db
+    entrypoint: [ "/app/wait-for.sh", "grpc-tube-db:5432", "--", "/app/start.sh" ]
+    command: [ "/app/grpc-tube" ]

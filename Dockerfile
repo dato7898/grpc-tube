@@ -37,8 +37,10 @@ WORKDIR /app
 COPY --from=builder /app/grpc-tube .
 COPY --from=builder /app/migrate ./migrate
 COPY start.sh .
+COPY wait-for.sh .
 COPY db/migration ./migration
 RUN chmod +x start.sh
+RUN chmod +x wait-for.sh
 
 EXPOSE 8080
 
