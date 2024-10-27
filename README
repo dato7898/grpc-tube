@@ -31,4 +31,8 @@ docker push ddato/grpc-tube:latest
 
 docker compose up -d
 
+--- Create migration ---
+
+migrate create -ext sql -dir db/migration -seq create_user_table
+
 --- END ---

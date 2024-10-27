@@ -28,12 +28,19 @@ RUN go build -o grpc-tube ./cmd/main.go
 
 RUN chmod +x grpc-tube
 
+RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.1/migrate.linux-amd64.tar.gz | tar xvz
+
 FROM alpine:latest
 
 WORKDIR /app
 
 COPY --from=builder /app/grpc-tube .
+COPY --from=builder /app/migrate ./migrate
+COPY start.sh .
+COPY db/migration ./migration
+RUN chmod +x start.sh
 
 EXPOSE 8080
 
 CMD ["./grpc-tube"]
+ENTRYPOINT [ "./start.sh" ]
