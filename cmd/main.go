@@ -1,29 +1,29 @@
 package main
 
 import (
+	"database/sql"
 	"log"
-	"net"
 
-	"github.com/dato7898/grpc-tube/pb"
-	"github.com/dato7898/grpc-tube/services/user"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
+	db "github.com/dato7898/grpc-tube/db/sqlc"
+	"github.com/dato7898/grpc-tube/services"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {
-	port := "8080"
-	lis, err := net.Listen("tcp", ":"+port)
+
+	conn, err := sql.Open("postgres", "postgresql://grpc_tube:grpc_tube@localhost:5432/grpc_tube?sslmode=disable")
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatal("cannot connect to db:", err)
 	}
 
-	s := grpc.NewServer()
-
-	pb.RegisterUserServer(s, &user.Server{})
-	reflection.Register(s)
-
-	log.Printf("server listening at %v", lis.Addr())
-	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+	store := db.NewStore(conn)
+	server, err := services.NewServer(store)
+	if err != nil {
+		log.Fatal("cannot create server:", err)
+	}
+	err = server.Start()
+	if err != nil {
+		log.Fatal("cannot start server:", err)
 	}
 }

@@ -35,4 +35,8 @@ docker compose up -d
 
 migrate create -ext sql -dir db/migration -seq create_user_table
 
+--- Generate sqlc code ---
+
+sqlc generate
+
 --- END ---
