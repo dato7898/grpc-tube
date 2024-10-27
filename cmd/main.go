@@ -12,7 +12,7 @@ import (
 
 func main() {
 
-	conn, err := sql.Open("postgres", "postgresql://grpc_tube:grpc_tube@localhost:5432/grpc_tube?sslmode=disable")
+	conn, err := sql.Open("postgres", "postgresql://grpc_tube:grpc_tube@grpc-tube-db:5432/grpc_tube?sslmode=disable")
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
