@@ -6,6 +6,7 @@ option go_package = "github.com/dato7898/grpc-tube/pb";
 
 service User {
     rpc Register(RegisterRequest) returns (RegisterResponse){}
+    rpc Verify(VerifyRequest) returns (VerifyResponse){}
 }
 
 message RegisterRequest {
@@ -18,4 +19,13 @@ message RegisterResponse {
     int64 id = 1;
     string username = 2;
     string email = 3;
+}
+
+message VerifyRequest {
+    int64 userId = 1;
+    string code = 2;
+}
+
+message VerifyResponse {
+    bool success = 1;
 }

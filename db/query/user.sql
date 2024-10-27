@@ -10,3 +10,8 @@ INSERT INTO "user" (
 -- name: GetUser :one
 SELECT * FROM "user"
 WHERE id = $1 LIMIT 1;
+
+-- name: VerifyUser :exec
+UPDATE "user"
+SET verified = true
+WHERE id = $1;

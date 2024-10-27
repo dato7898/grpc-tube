@@ -2,11 +2,21 @@
 
 package db
 
-import ()
+import (
+	"time"
+)
+
+type AuthToken struct {
+	ID        int64     `json:"id"`
+	UserID    int64     `json:"user_id"`
+	Code      string    `json:"code"`
+	ExpiredAt time.Time `json:"expired_at"`
+}
 
 type User struct {
 	ID             int64  `json:"id"`
 	Username       string `json:"username"`
 	HashedPassword string `json:"hashed_password"`
 	Email          string `json:"email"`
+	Verified       bool   `json:"verified"`
 }
