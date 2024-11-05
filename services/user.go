@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"time"
 
 	db "github.com/dato7898/grpc-tube/db/sqlc"
 	"github.com/dato7898/grpc-tube/pb"
@@ -48,7 +47,10 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResp
 		return nil, err
 	}
 
-	accessToken, err := s.tokenMaker.CreateToken(user.Username, 15*time.Minute)
+	accessToken, err := s.tokenMaker.CreateToken(
+		user.Username,
+		s.config.AccessTokenDuration,
+	)
 	if err != nil {
 		return nil, err
 	}
