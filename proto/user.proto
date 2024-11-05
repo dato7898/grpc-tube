@@ -2,10 +2,17 @@ syntax = "proto3";
 
 package kz.dato.proto;
 
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/dato7898/grpc-tube/pb";
 
 service User {
     rpc Register(RegisterRequest) returns (RegisterResponse){}
+
+    rpc Login(LoginRequest) returns (LoginResponse){}
+
+    rpc Me(google.protobuf.Empty) returns (AuthPayload){}
 }
 
 message RegisterRequest {
@@ -18,4 +25,23 @@ message RegisterResponse {
     int64 id = 1;
     string username = 2;
     string email = 3;
+}
+
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    string access_token = 1;
+    int64 id = 2;
+    string username = 3;
+    string email = 4;
+}
+
+message AuthPayload {
+    string id = 1;
+    string username = 2;
+    google.protobuf.Timestamp issued_at = 3;
+    google.protobuf.Timestamp expired_at = 4;
 }

@@ -9,4 +9,4 @@ INSERT INTO "user" (
 
 -- name: GetUser :one
 SELECT * FROM "user"
-WHERE id = $1 LIMIT 1;
+WHERE username = $1 LIMIT 1;
