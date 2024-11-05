@@ -9,7 +9,7 @@ user.proto
 
 --- Run localy ---
 
-go run cmd/main.go
+go run main.go
 
 --- Build docker image ---
 

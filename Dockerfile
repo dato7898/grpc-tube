@@ -24,7 +24,7 @@ RUN protoc \
     --go-grpc_out=./pb --go-grpc_opt=paths=source_relative \
     user.proto
 
-RUN go build -o grpc-tube ./cmd/main.go
+RUN go build -o grpc-tube ./main.go
 
 RUN chmod +x grpc-tube
 
@@ -36,6 +36,7 @@ WORKDIR /app
 
 COPY --from=builder /app/grpc-tube .
 COPY --from=builder /app/migrate ./migrate
+COPY app.env .
 COPY start.sh .
 COPY wait-for.sh .
 COPY db/migration ./migration
