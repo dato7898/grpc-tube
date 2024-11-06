@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package kz.dato.proto;
+
+option go_package = "github.com/dato7898/grpc-tube/pb";
+
+service Video {
+    rpc UploadVideo(stream VideoChunk) returns (UploadState);
+}
+
+message VideoChunk {
+    bytes content = 1;
+    string filename = 2;
+}
+
+message UploadState {
+    bool success = 1;
+    string message = 2;
+}

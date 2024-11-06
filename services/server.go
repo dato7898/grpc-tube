@@ -18,6 +18,7 @@ import (
 // Server serves GRPC request for our service.
 type Server struct {
 	pb.UserServer
+	pb.VideoServer
 	store      db.Store
 	grpcServer *grpc.Server
 	tokenMaker token.Maker
@@ -37,17 +38,27 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 		config:     config,
 	}
 
-	s := grpc.NewServer(grpc.ChainUnaryInterceptor(
-		// Order matters e.g. tracing interceptor have to create span first for the later exemplars to work.
-		selector.UnaryServerInterceptor(
-			auth.UnaryServerInterceptor(server.authenticator),
-			selector.MatchFunc(authMatcher),
+	s := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			// Order matters e.g. tracing interceptor have to create span first for the later exemplars to work.
+			selector.UnaryServerInterceptor(
+				auth.UnaryServerInterceptor(server.authenticator),
+				selector.MatchFunc(authMatcher),
+			),
 		),
-	))
+		grpc.ChainStreamInterceptor(
+			// Stream interceptors chain for streaming RPCs
+			selector.StreamServerInterceptor(
+				auth.StreamServerInterceptor(server.authenticator),
+				selector.MatchFunc(authMatcher),
+			),
+		),
+	)
 
 	server.grpcServer = s
 
 	pb.RegisterUserServer(s, server)
+	pb.RegisterVideoServer(s, server)
 	reflection.Register(s)
 
 	return server, nil

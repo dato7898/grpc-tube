@@ -33,5 +33,8 @@ func authMatcher(ctx context.Context, callMeta interceptors.CallMeta) bool {
 			return true
 		}
 	}
+	if pb.Video_ServiceDesc.ServiceName == callMeta.Service {
+		return true
+	}
 	return false
 }
