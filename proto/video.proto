@@ -2,18 +2,45 @@ syntax = "proto3";
 
 package kz.dato.proto;
 
+import "common.proto";
+
 option go_package = "github.com/dato7898/grpc-tube/pb";
 
 service Video {
     rpc UploadVideo(stream VideoChunk) returns (UploadState);
+    
+    rpc AllVideos(common.PageRequest) returns (AllVideosResponse);
+
+    rpc GetVideo(GetVideoRequest) returns (stream GetVideoResponse);
 }
 
 message VideoChunk {
     bytes content = 1;
     string filename = 2;
+    string title = 3;
+    string description = 4;
 }
 
 message UploadState {
     bool success = 1;
     string message = 2;
+}
+
+message VideoResponse {
+    string id = 1;
+    string title = 2;
+    string description = 3;
+    int64 views = 4;
+}
+
+message AllVideosResponse {
+    repeated VideoResponse videos = 1;
+}
+
+message GetVideoRequest {
+    string id = 1;
+}
+
+message GetVideoResponse {
+    bytes chunk = 1;
 }

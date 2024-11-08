@@ -2,11 +2,20 @@
 
 package db
 
-import ()
+import (
+	"database/sql"
+)
 
 type User struct {
 	ID             int64  `json:"id"`
 	Username       string `json:"username"`
 	HashedPassword string `json:"hashed_password"`
 	Email          string `json:"email"`
+}
+
+type Video struct {
+	ID          string         `json:"id"`
+	Title       sql.NullString `json:"title"`
+	Description sql.NullString `json:"description"`
+	Views       sql.NullInt64  `json:"views"`
 }

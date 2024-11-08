@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "github.com/dato7898/grpc-tube/pb";
+
+message PageRequest {
+    int64 page_num = 1;
+    int64 page_size = 2;
+}

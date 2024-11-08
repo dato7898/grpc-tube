@@ -1,6 +1,8 @@
 package services
 
 import (
+	"context"
+	"database/sql"
 	"fmt"
 	"io"
 	"os"
@@ -8,6 +10,7 @@ import (
 	"strings"
 
 	securejoin "github.com/cyphar/filepath-securejoin"
+	db "github.com/dato7898/grpc-tube/db/sqlc"
 	"github.com/dato7898/grpc-tube/pb"
 	"github.com/dato7898/grpc-tube/util"
 	"github.com/lithammer/shortuuid/v3"
@@ -15,6 +18,7 @@ import (
 
 func (s *Server) UploadVideo(stream pb.Video_UploadVideoServer) error {
 	var uf *os.File
+	var title, description string
 	defer func() {
 		if uf != nil {
 			defer os.Remove(uf.Name())
@@ -130,6 +134,20 @@ func (s *Server) UploadVideo(stream pb.Video_UploadVideoServer) error {
 				}
 			}
 
+			arg := db.CreateVideoParams{
+				ID: strings.TrimSuffix(vf, filepath.Ext(vf)),
+				Title: sql.NullString{
+					String: title,
+					Valid:  title != "",
+				},
+				Description: sql.NullString{
+					String: description,
+					Valid:  description != "",
+				},
+			}
+
+			s.store.CreateVideo(stream.Context(), arg)
+
 			return stream.SendAndClose(&pb.UploadState{Success: true, Message: "File uploaded successfully"})
 		}
 		if err != nil {
@@ -138,6 +156,7 @@ func (s *Server) UploadVideo(stream pb.Video_UploadVideoServer) error {
 
 		// Open the file only on receiving the first chunk
 		if uf == nil {
+			title, description = chunk.Title, chunk.Description
 			uf, err = os.CreateTemp(
 				"uploads",
 				fmt.Sprintf("grpc-tube-upload-*%s", filepath.Ext(chunk.Filename)),
@@ -154,7 +173,61 @@ func (s *Server) UploadVideo(stream pb.Video_UploadVideoServer) error {
 	}
 }
 
+func (s *Server) AllVideos(ctx context.Context, req *pb.PageRequest) (*pb.AllVideosResponse, error) {
+	arg := db.GetAllParams{
+		Limit:  int32(req.PageSize),
+		Offset: int32(req.PageNum),
+	}
+	videos, err := s.store.GetAll(ctx, arg)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AllVideosResponse{
+		Videos: mapVideos(videos),
+	}, nil
+}
+
+func (s *Server) GetVideo(req *pb.GetVideoRequest, stream pb.Video_GetVideoServer) error {
+	filePath := fmt.Sprintf("%v.mp4", req.Id)
+	file, err := os.Open(filePath)
+	if err != nil {
+		return fmt.Errorf("could not open video file: %v", err)
+	}
+	defer file.Close()
+	buf := make([]byte, 1024*8)
+	for {
+		n, err := file.Read(buf)
+		if err != nil && err != io.EOF {
+			return fmt.Errorf("read error: %v", err)
+		}
+
+		if n == 0 {
+			break
+		}
+
+		if err := stream.Send(&pb.GetVideoResponse{
+			Chunk: buf[:n],
+		}); err != nil {
+			return fmt.Errorf("could not send video chunk: %v", err)
+		}
+	}
+
+	return nil
+}
+
 func filenameWithoutExtension(path string) (stem string) {
 	basename := filepath.Base(path)
 	return basename[0 : len(basename)-len(filepath.Ext(basename))]
+}
+
+func mapVideos(videos []db.Video) (result []*pb.VideoResponse) {
+	for _, v := range videos {
+		result = append(result, &pb.VideoResponse{
+			Id:          v.ID,
+			Title:       v.Title.String,
+			Description: v.Description.String,
+			Views:       v.Views.Int64,
+		})
+	}
+	return
 }

@@ -22,7 +22,7 @@ RUN protoc \
     --proto_path=./proto/ \
     --go_out=./pb --go_opt=paths=source_relative \
     --go-grpc_out=./pb --go-grpc_opt=paths=source_relative \
-    user.proto
+    user.proto video.proto common.proto
 
 RUN go build -o grpc-tube ./main.go
 
