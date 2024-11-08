@@ -32,6 +32,8 @@ RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.1/
 
 FROM alpine:latest
 
+RUN apk --no-cache -U add su-exec shadow ca-certificates tzdata ffmpeg
+
 WORKDIR /app
 
 COPY --from=builder /app/grpc-tube .
@@ -40,6 +42,8 @@ COPY app.env .
 COPY start.sh .
 COPY wait-for.sh .
 COPY db/migration ./migration
+COPY uploads ./uploads
+COPY videos ./videos
 RUN chmod +x start.sh
 RUN chmod +x wait-for.sh
 
