@@ -44,6 +44,7 @@ RUN chmod +x start.sh
 RUN chmod +x wait-for.sh
 
 EXPOSE 8080
+EXPOSE 50051
 
 CMD ["./grpc-tube"]
 ENTRYPOINT [ "./start.sh" ]

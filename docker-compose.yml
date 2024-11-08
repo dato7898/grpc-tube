@@ -15,6 +15,7 @@ services:
     image: ddato/grpc-tube:latest
     ports:
       - "8080:8080"
+      - "50051:50051"
     environment:
       - DB_SOURCE=postgresql://grpc_tube:grpc_tube@grpc-tube-db:5432/grpc_tube?sslmode=disable
     depends_on:

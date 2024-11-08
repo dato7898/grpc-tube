@@ -145,12 +145,6 @@ func (s *Server) UploadVideo(stream pb.Video_UploadVideoServer) error {
 			if err != nil {
 				return fmt.Errorf("error creating temporary file for uploading: %w", err)
 			}
-
-			// filename := filepath.Join("video", chunk.Filename)
-			// file, err = os.Create(filename)
-			// if err != nil {
-			// 	return fmt.Errorf("failed to create file: %w", err)
-			// }
 		}
 
 		// Write the current chunk to the file

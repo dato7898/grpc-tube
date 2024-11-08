@@ -11,7 +11,8 @@ import (
 type Config struct {
 	DBDriver            string        `mapstructure:"DB_DRIVER"`
 	DBSource            string        `mapstructure:"DB_SOURCE"`
-	ServerPort          string        `mapstructure:"SERVER_PORT"`
+	HttpServerPort      string        `mapstructure:"HTTP_SERVER_PORT"`
+	GrpcServerPort      string        `mapstructure:"GRPC_SERVER_PORT"`
 	TokenSymmetricKey   string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
 	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
 }
