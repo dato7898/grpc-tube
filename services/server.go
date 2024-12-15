@@ -73,7 +73,7 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 			// Добавляем CORS заголовки
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, X-Requested-With, grpc-status, grpc-message, X-User-Agent, X-Grpc-Web")
+			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, X-Requested-With, grpc-status, grpc-message, X-User-Agent, X-Grpc-Web, Authorization")
 			w.Header().Set("Access-Control-Expose-Headers", "grpc-status, grpc-message, application/grpc-web-text, X-Grpc-Web, X-User-Agent, grpc-web-javascript/0.1")
 
 			if r.Method == "OPTIONS" {
